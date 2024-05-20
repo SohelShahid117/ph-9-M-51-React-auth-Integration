@@ -1,4 +1,5 @@
 //51-1 Module Introduction And Basic Project Setup
+//51-2 Create Login And Registration Form Using Daisy UI
 
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
