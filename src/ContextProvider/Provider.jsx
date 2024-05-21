@@ -11,11 +11,13 @@ import {
 
 //51-3 Create User Context For Shared Authentication
 //51-5 Add Sign In User Using Context API
+//51-7 Introduction To Private Route And Handle Loading State
 
 export const AuthContext = createContext(null);
 
 const Provider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   // const authInfo = { name: "programmer Sohel" };
 
   const createUser = (email, password) => {
@@ -23,9 +25,11 @@ const Provider = ({ children }) => {
   };
 
   const signInUser = (email, password) => {
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
   const logOut = () => {
+    setLoading(true);
     return signOut(auth);
   };
 
@@ -36,13 +40,14 @@ const Provider = ({ children }) => {
       if (currentUser) {
         setUser(currentUser);
       }
+      setLoading(false);
     });
     return () => {
       unSubscribe();
     };
   }, []);
 
-  const authInfo = { user, createUser, signInUser, logOut };
+  const authInfo = { user, loading, createUser, signInUser, logOut };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
