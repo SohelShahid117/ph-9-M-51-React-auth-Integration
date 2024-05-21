@@ -1,10 +1,13 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../ContextProvider/Provider";
+//51-8 Navigate After Login And Social Sign In And Practice Task
 
 const Login = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, signInWithGoogle } = useContext(AuthContext);
   console.log(signInUser);
+
+  const navaigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -15,8 +18,20 @@ const Login = () => {
     signInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        e.target.reset();
+        navaigate("/");
       })
       .then((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -71,6 +86,14 @@ const Login = () => {
             New here?Pls
             <Link to="/register">
               <button className="btn btn-accent">Register</button>
+            </Link>
+          </p>
+          <p>
+            login using
+            <Link to="/">
+              <button onClick={handleGoogleSignIn} className="btn btn-ghost">
+                Google
+              </button>
             </Link>
           </p>
         </div>

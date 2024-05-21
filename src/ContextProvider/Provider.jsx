@@ -3,9 +3,11 @@ import { createContext } from "react";
 import PropTypes from "prop-types"; // ES6
 import auth from "../Firebase/firebase.config";
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
 
@@ -14,6 +16,7 @@ import {
 //51-7 Introduction To Private Route And Handle Loading State
 
 export const AuthContext = createContext(null);
+const googleProvider = new GoogleAuthProvider();
 
 const Provider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -28,6 +31,12 @@ const Provider = ({ children }) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
+
+  const signInWithGoogle = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
+
   const logOut = () => {
     setLoading(true);
     return signOut(auth);
@@ -47,7 +56,14 @@ const Provider = ({ children }) => {
     };
   }, []);
 
-  const authInfo = { user, loading, createUser, signInUser, logOut };
+  const authInfo = {
+    user,
+    loading,
+    createUser,
+    signInUser,
+    logOut,
+    signInWithGoogle,
+  };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
