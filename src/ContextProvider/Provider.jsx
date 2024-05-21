@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { createContext } from "react";
 import PropTypes from "prop-types"; // ES6
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 //51-3 Create User Context For Shared Authentication
 
 export const AuthContext = createContext(null);
 
 const Provider = ({ children }) => {
-  const authInfo = { name: "programmer Sohel" };
+  const [user, setUser] = useState(null);
+  // const authInfo = { name: "programmer Sohel" };
+
+  const createUser = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  const authInfo = { user, createUser };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
