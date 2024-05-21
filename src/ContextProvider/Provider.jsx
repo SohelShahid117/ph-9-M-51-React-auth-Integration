@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
 //51-3 Create User Context For Shared Authentication
@@ -24,12 +25,16 @@ const Provider = ({ children }) => {
   const signInUser = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
+  const logOut = () => {
+    return signOut(auth);
+  };
 
+  //observe auth state change
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("current user is ", currentUser);
       if (currentUser) {
         setUser(currentUser);
-        console.log("current user is ", currentUser);
       }
     });
     return () => {
@@ -37,7 +42,7 @@ const Provider = ({ children }) => {
     };
   }, []);
 
-  const authInfo = { user, createUser, signInUser };
+  const authInfo = { user, createUser, signInUser, logOut };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );

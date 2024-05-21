@@ -1,7 +1,20 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../ContextProvider/Provider";
+//51-6 (Advanced) Use OnAuthStateChanged To Manage User Auth State
 
 const Navbar = () => {
+  const { user, logOut } = useContext(AuthContext);
+  console.log(user);
+  const handleLogout = () => {
+    logOut()
+      .then(() => {
+        console.log("user logout successfuly");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const navLinks = (
     <>
       <li>
@@ -50,8 +63,20 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navLinks}</ul>
       </div>
+
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        {user ? (
+          <>
+            <span>{user.email}</span>
+            <a className="btn ml-2" onClick={handleLogout}>
+              Sign Out
+            </a>
+          </>
+        ) : (
+          <Link to="/login" className="btn ml-2">
+            Login
+          </Link>
+        )}
       </div>
     </div>
   );
