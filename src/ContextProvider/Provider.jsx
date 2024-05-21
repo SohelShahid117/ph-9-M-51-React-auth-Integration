@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createContext } from "react";
 import PropTypes from "prop-types"; // ES6
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import auth from "../Firebase/firebase.config";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 //51-3 Create User Context For Shared Authentication
+//51-5 Add Sign In User Using Context API
 
 export const AuthContext = createContext(null);
 
@@ -15,7 +21,23 @@ const Provider = ({ children }) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const authInfo = { user, createUser };
+  const signInUser = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        console.log("current user is ", currentUser);
+      }
+    });
+    return () => {
+      unSubscribe();
+    };
+  }, []);
+
+  const authInfo = { user, createUser, signInUser };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
